@@ -1,0 +1,33 @@
+body {
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+}
+
+#logo-container {
+    position: relative;
+}
+
+#logo {
+    bottom: 50px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    /*width: 600px; !* Need a specific value to work *!*/
+
+    /*-webkit-filter: drop-shadow(12px 12px 7px rgba(255, 255, 255, 0.5));*/
+    filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.5));
+
+}
+
+#canvas {
+    width: 100%;
+    margin-top: 200px;
+    height: 400px;
+    position: relative;
+    opacity: 0.6;
+}
+

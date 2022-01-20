@@ -5,6 +5,13 @@ let particles: OrbitParticle[] = [];
 let centerParticle: Particle;
 
 export function setup() {
+  // canvas.width = 1920;
+  // canvas.height = 1080;
+
+  window.onresize = () => {
+    // canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
+  };
+  canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
   centerParticle = new Particle(canvas.width / 2, canvas.height / 2);
   centerParticle.color = "red";
   centerParticle.size = 50;
@@ -13,11 +20,13 @@ export function setup() {
     particles.push(new OrbitParticle(300, 400, 5, "yellow"));
     particles.push(new OrbitParticle(800, 700, 5, "green"));
   } else {
-    for (let i = 0; i < 6000; i++) {
+    for (let i = 0; i < 10000; i++) {
       let p = new OrbitParticle(
-        Math.floor(Math.random() * canvas.width),
-        Math.floor(Math.random() * canvas.height),
-        randomIntFromInterval(3, 7)
+        Math.floor(randomIntFromInterval(0, canvas.width)),
+        Math.floor(
+          randomIntFromInterval(-canvas.height * 4, canvas.height * 4)
+        ),
+        randomIntFromInterval(15, 25)
       );
 
       let color = (360 / canvas.width) * p.x;
@@ -30,10 +39,10 @@ export function setup() {
 }
 
 let lastDrawCall = 0;
-let framerate = (1 / 120) * 1000;
+let framerate = (1 / 60) * 1000;
 
 export function draw(timer: DOMHighResTimeStamp): void {
-  if (timer - lastDrawCall < framerate) {
+  if (timer - lastDrawCall <= framerate) {
     window.requestAnimationFrame(draw);
     return;
   }
@@ -69,12 +78,7 @@ class Particle {
     this.color = color;
   }
 
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    ctx.fill();
-  }
+  draw() {}
 }
 
 class OrbitParticle extends Particle {
@@ -99,13 +103,17 @@ class OrbitParticle extends Particle {
       centerParticle.y,
       this.x,
       this.y,
-      0.1 + this.radius * 0.0001
+      (0.1 + this.radius * 0.0002) * 0.2
     );
   }
 
   draw() {
     this.process();
-    super.draw();
+    // super.draw();
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    ctx.fill();
   }
 }
 
