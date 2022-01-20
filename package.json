@@ -1,0 +1,19 @@
+{
+  "name": "skylab-particle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^2.5.1",
+    "snowpack": "^3.8.8"
+  },
+  "dependencies": {
+    "proton-engine": "5.2.7"
+  }
+}
