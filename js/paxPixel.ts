@@ -9,7 +9,7 @@ export function setup() {
   centerParticle.color = "red";
   centerParticle.size = 50;
 
-  if (true) {
+  if (false) {
     particles.push(new OrbitParticle(300, 400, 5, "yellow"));
     particles.push(new OrbitParticle(800, 700, 5, "green"));
   } else {
@@ -109,24 +109,40 @@ class OrbitParticle extends Particle {
   }
 
   process() {
-    this.rotation += 0.01;
+    this.rotation += 0.005;
 
-    let xRadian = Math.acos(this.cos);
-    xRadian += (this.rotation % 2) * Math.PI; // Clamp to max radians, which is 2*Math.PI
-    console.log(xRadian);
-
-    let cos = Math.cos(xRadian);
+    // let xRadian = Math.acos(this.cos) + this.rotation; // Clamp to max radians, which is 2*Math.PI
+    // let yRadian = Math.asin(this.sin) + this.rotation;
+    //
+    // let cos = Math.cos(xRadian);
+    // let sin = Math.sin(yRadian);
 
     // Re-Calculate position based on orbit point
     // this.x = centerParticle.x - this.xDistance;
-    this.x = centerParticle.x - this.radius * cos;
-    // this.y = centerParticle.y - this.radius * this.sin;
+
+    [this.x, this.y] = rotate(
+      centerParticle.x,
+      centerParticle.y,
+      this.x,
+      this.y,
+      0.1 + this.radius * 0.0001
+    );
   }
 
   draw() {
     this.process();
     super.draw();
   }
+}
+
+// from https://stackoverflow.com/questions/17410809/how-to-calculate-rotation-in-2d-in-javascript
+function rotate(cx, cy, x, y, angle) {
+  const radians = (Math.PI / 180) * angle,
+    cos = Math.cos(radians),
+    sin = Math.sin(radians),
+    nx = cos * (x - cx) + sin * (y - cy) + cx,
+    ny = cos * (y - cy) - sin * (x - cx) + cy;
+  return [nx, ny];
 }
 
 export function randomIntFromInterval(min, max) {
