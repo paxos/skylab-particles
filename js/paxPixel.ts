@@ -13,10 +13,11 @@ export function setup() {
     particles.push(new OrbitParticle(300, 400, 5, "yellow"));
     particles.push(new OrbitParticle(800, 700, 5, "green"));
   } else {
-    for (let i = 0; i < 5000; i++) {
+    for (let i = 0; i < 6000; i++) {
       let p = new OrbitParticle(
         Math.floor(Math.random() * canvas.width),
-        Math.floor(Math.random() * canvas.height)
+        Math.floor(Math.random() * canvas.height),
+        randomIntFromInterval(3, 7)
       );
 
       let color = (360 / canvas.width) * p.x;
@@ -77,48 +78,21 @@ class Particle {
 }
 
 class OrbitParticle extends Particle {
-  sin: number;
-  cos: number;
   rotation: number = 0;
-  yDistance: number;
-  xDistance: number;
   radius: number;
 
-  constructor(
-    x: number,
-    y: number,
-    size = randomIntFromInterval(3, 8),
-    color = "blue"
-  ) {
+  constructor(x: number, y: number, size = 5, color = "blue") {
     super(x, y, size, color);
 
-    // TODO: whats the starting rotationProgress?
-    this.yDistance = centerParticle.y - this.y;
-    this.xDistance = centerParticle.x - this.x;
+    const yDistance = centerParticle.y - this.y;
+    const xDistance = centerParticle.x - this.x;
     this.radius = Math.sqrt(
-      Math.pow(Math.abs(this.xDistance), 2) +
-        Math.pow(Math.abs(this.yDistance), 2)
+      Math.pow(Math.abs(xDistance), 2) + Math.pow(Math.abs(yDistance), 2)
     );
-
-    // https://www.mathsisfun.com/sine-cosine-tangent.html
-    // https://setosa.io/ev/sine-and-cosine/
-    this.sin = this.yDistance / this.radius;
-    this.cos = this.xDistance / this.radius;
-
-    // this.rotationProgress = Math.random() * Math.PI * 2;
   }
 
   process() {
     this.rotation += 0.005;
-
-    // let xRadian = Math.acos(this.cos) + this.rotation; // Clamp to max radians, which is 2*Math.PI
-    // let yRadian = Math.asin(this.sin) + this.rotation;
-    //
-    // let cos = Math.cos(xRadian);
-    // let sin = Math.sin(yRadian);
-
-    // Re-Calculate position based on orbit point
-    // this.x = centerParticle.x - this.xDistance;
 
     [this.x, this.y] = rotate(
       centerParticle.x,
@@ -136,6 +110,7 @@ class OrbitParticle extends Particle {
 }
 
 // from https://stackoverflow.com/questions/17410809/how-to-calculate-rotation-in-2d-in-javascript
+// Explain: https://www.youtube.com/watch?v=OYuoPTRVzxY
 function rotate(cx, cy, x, y, angle) {
   const radians = (Math.PI / 180) * angle,
     cos = Math.cos(radians),
@@ -147,12 +122,4 @@ function rotate(cx, cy, x, y, angle) {
 
 export function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-export function degrees_to_radians(degrees) {
-  return degrees * (Math.PI / 180);
-}
-
-export function radians_to_degrees(radians) {
-  return radians * (180 / Math.PI);
 }
