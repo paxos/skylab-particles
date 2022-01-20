@@ -9,14 +9,16 @@ export function setup() {
   centerParticle.color = "red";
   centerParticle.size = 20;
 
-  for (let i = 0; i < 1000; i++) {
-    particles.push(
-      new Particle(
-        Math.floor(Math.random() * canvas.width),
-        Math.floor(Math.random() * canvas.height)
-      )
-    );
-  }
+  particles.push(new Particle(20, 20));
+
+  // for (let i = 0; i < 1000; i++) {
+  //   particles.push(
+  //     new Particle(
+  //       Math.floor(Math.random() * canvas.width),
+  //       Math.floor(Math.random() * canvas.height)
+  //     )
+  //   );
+  // }
 
   window.requestAnimationFrame(draw);
 }
@@ -24,14 +26,14 @@ export function setup() {
 export function draw(): void {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
 
-  centerParticle.draw();
+  centerParticle.draw(false);
 
   particles.forEach((p) => {
     const randomColor = Math.floor(Math.random() * 16777215).toString(16);
 
     //p.x = p.x + 1;
     // p.color = randomColor;
-    p.draw();
+    p.draw(true);
   });
 
   // ctx.fillStyle = "rgb(200, 0, 0)";
@@ -48,16 +50,32 @@ class Particle {
   y: number;
   size: number = 5;
   color = "blue";
+  rotationProgress = 0.1;
 
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
 
-  draw() {
+  draw(translated: boolean) {
+    let x = this.x;
+    let y = this.y;
+
+    if (translated) {
+      this.rotationProgress += 0.05;
+      const xDistance = Math.abs(centerParticle.x - this.x);
+      const yDistance = Math.abs(centerParticle.y - this.y);
+
+      //const radius = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2)); // Calc from Tan
+
+      const radius = 60;
+      x = radius * Math.cos(this.rotationProgress) + centerParticle.x;
+      y = radius * Math.sin(this.rotationProgress) + centerParticle.y;
+    }
+
     ctx.fillStyle = this.color;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    ctx.arc(x, y, this.size, 0, 2 * Math.PI);
     ctx.fill();
   }
 }
