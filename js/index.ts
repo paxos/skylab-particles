@@ -1,4 +1,3 @@
-// my-first-snowpack/index.js
-import {helloWorld} from './hello-world.js';
+import { setup } from "./paxPixel";
 
-helloWorld();
+setup();
