@@ -9,17 +9,19 @@ export function setup() {
   centerParticle.color = "red";
   centerParticle.size = 50;
 
-  // particles.push(new Particle(200, 200));
+  if (false) {
+    particles.push(new OrbitParticle(200, 400));
+  } else {
+    for (let i = 0; i < 5000; i++) {
+      let p = new OrbitParticle(
+        Math.floor(Math.random() * canvas.width),
+        Math.floor(Math.random() * canvas.height)
+      );
 
-  for (let i = 0; i < 8000; i++) {
-    let p = new OrbitParticle(
-      Math.floor(Math.random() * canvas.width),
-      Math.floor(Math.random() * canvas.height)
-    );
-
-    let color = (360 / canvas.width) * p.x;
-    p.color = `hsl(${color}, 80%, 50%)`;
-    particles.push(p);
+      let color = (360 / canvas.width) * p.x;
+      p.color = `hsl(${color}, 80%, 50%)`;
+      particles.push(p);
+    }
   }
 
   window.requestAnimationFrame(draw);
@@ -43,7 +45,7 @@ export function draw(timer: DOMHighResTimeStamp): void {
 
     //p.x = p.x + 1;
     // p.color = randomColor;
-    p.draw(false);
+    p.draw(true);
   });
 
   centerParticle.draw(false);
@@ -62,7 +64,9 @@ class Particle {
   y: number;
   size: number = 5;
   color = "blue";
-  rotationProgress = 0.1;
+  sin: number;
+  cos: number;
+  rotation = Math.PI;
 
   constructor(x: number, y: number, size = randomIntFromInterval(3, 8)) {
     this.x = x;
@@ -78,10 +82,19 @@ class Particle {
       const yDistance = Math.abs(centerParticle.y - this.y);
 
       const radius = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-      this.rotationProgress += radius * 0.00003;
 
-      x = radius * Math.cos(this.rotationProgress) + centerParticle.x;
-      y = radius * Math.sin(this.rotationProgress) + centerParticle.y;
+      this.rotation += 0.01;
+
+      //this.sin += radius * 0.00003;
+      //this.cos += radius * 0.00003;
+
+      x = centerParticle.x + radius * Math.sin(this.rotation + this.cos);
+      y = centerParticle.y + radius * Math.cos(this.rotation + this.cos);
+
+      // x = radius * this.cos + centerParticle.x;
+
+      //x = radius * this.cos + centerParticle.x;
+      //y = radius * this.sin + centerParticle.y;
     }
 
     ctx.fillStyle = this.color;
@@ -104,11 +117,11 @@ class OrbitParticle extends Particle {
     const radius = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 
     // TODO: This is incorrect
-    const cos = Math.acos(xDistance / radius);
-    const sin = Math.asin(xDistance / radius);
+    // https://www.mathsisfun.com/sine-cosine-tangent.html
+    this.sin = yDistance / radius;
+    this.cos = xDistance / radius;
 
     // this.rotationProgress = Math.random() * Math.PI * 2;
-    this.rotationProgress = cos * 4;
   }
 }
 
