@@ -23,7 +23,17 @@ export function setup() {
   window.requestAnimationFrame(draw);
 }
 
-export function draw(): void {
+let lastDrawCall = 0;
+let framerate = (1 / 120) * 1000;
+
+export function draw(timer: DOMHighResTimeStamp): void {
+  if (timer - lastDrawCall < framerate) {
+    window.requestAnimationFrame(draw);
+    //  console.log("skip");
+    return;
+  }
+  lastDrawCall = timer;
+
   ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
 
   centerParticle.draw(false);
