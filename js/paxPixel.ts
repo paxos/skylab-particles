@@ -7,18 +7,18 @@ let centerParticle: Particle;
 export function setup() {
   centerParticle = new Particle(canvas.width / 2, canvas.height / 2);
   centerParticle.color = "red";
-  centerParticle.size = 20;
+  centerParticle.size = 50;
 
-  particles.push(new Particle(20, 20));
+  // particles.push(new Particle(200, 200));
 
-  // for (let i = 0; i < 1000; i++) {
-  //   particles.push(
-  //     new Particle(
-  //       Math.floor(Math.random() * canvas.width),
-  //       Math.floor(Math.random() * canvas.height)
-  //     )
-  //   );
-  // }
+  for (let i = 0; i < 8000; i++) {
+    particles.push(
+      new Particle(
+        Math.floor(Math.random() * canvas.width),
+        Math.floor(Math.random() * canvas.height)
+      )
+    );
+  }
 
   window.requestAnimationFrame(draw);
 }
@@ -52,9 +52,12 @@ class Particle {
   color = "blue";
   rotationProgress = 0.1;
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, size = randomIntFromInterval(2, 6)) {
     this.x = x;
     this.y = y;
+    this.size = size;
+
+    this.rotationProgress = Math.random() * Math.PI * 2;
   }
 
   draw(translated: boolean) {
@@ -62,13 +65,12 @@ class Particle {
     let y = this.y;
 
     if (translated) {
-      this.rotationProgress += 0.05;
       const xDistance = Math.abs(centerParticle.x - this.x);
       const yDistance = Math.abs(centerParticle.y - this.y);
 
-      //const radius = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2)); // Calc from Tan
+      const radius = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+      this.rotationProgress += radius * 0.00003;
 
-      const radius = 60;
       x = radius * Math.cos(this.rotationProgress) + centerParticle.x;
       y = radius * Math.sin(this.rotationProgress) + centerParticle.y;
     }
@@ -78,4 +80,9 @@ class Particle {
     ctx.arc(x, y, this.size, 0, 2 * Math.PI);
     ctx.fill();
   }
+}
+
+export function randomIntFromInterval(min, max) {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
