@@ -20,13 +20,13 @@ export function setup() {
     particles.push(new OrbitParticle(300, 400, 5, "yellow"));
     particles.push(new OrbitParticle(800, 700, 5, "green"));
   } else {
-    for (let i = 0; i < 10000; i++) {
+    for (let i = 0; i < 50000; i++) {
       let p = new OrbitParticle(
         Math.floor(randomIntFromInterval(0, canvas.width)),
         Math.floor(
           randomIntFromInterval(-canvas.height * 4, canvas.height * 4)
         ),
-        randomIntFromInterval(15, 25)
+        randomIntFromInterval(5, 15)
       );
 
       let color = (360 / canvas.width) * p.x;
@@ -109,8 +109,29 @@ class OrbitParticle extends Particle {
 
   draw() {
     this.process();
+
+    // ctx.globalAlpha = 0.7;
+    // ctx.shadowBlur = 15;
+    // ctx.shadowColor = this.color;
+
+    // Lets not draw if offscreen
+    if (
+      this.x + this.size < 0 ||
+      this.y + this.size < 0 ||
+      this.y + this.size > ctx.height ||
+      this.x + this.size > ctx.width
+    ) {
+      return;
+    }
+
     // super.draw();
+
+    // ctx.save();
+
     ctx.fillStyle = this.color;
+
+    // ctx.fillRect(this.x, this.y, this.size, this.size);
+
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     ctx.fill();
