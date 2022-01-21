@@ -1,4 +1,4 @@
-import { randomIntFromInterval } from "./paxPixel";
+import { randomIntFromInterval } from "./ParticleRenderer";
 
 export class Particle {
   x: number;
