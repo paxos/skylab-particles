@@ -45,7 +45,8 @@ export function setup() {
     const bounds = canvas.getBoundingClientRect();
     const sx = window.scrollX; // This saves a ton of performance
     const sy = window.scrollY;
-    particles.forEach((particle) => {
+
+    for (let particle of particles) {
       // Source: https://stackoverflow.com/questions/3680429/click-through-div-to-underlying-elements
       mouse.x = event.pageX - bounds.left - sx;
       mouse.y = event.pageY - bounds.top - sy;
@@ -72,39 +73,34 @@ export function setup() {
         // particle.color = "red";
         particle.color = "white";
       }
-    });
+    }
   };
 
-  if (false) {
-  } else {
-    for (let i = 0; i < 50000; i++) {
-      let p = new OrbitParticle(
-        Math.floor(randomIntFromInterval(0, canvas.width)),
-        Math.floor(
-          randomIntFromInterval(-canvas.height * 4, canvas.height * 4)
-        ),
-        randomIntFromInterval(8, 12),
-        centerParticle,
-        ctx
-      );
+  for (let i = 0; i < 50000; i++) {
+    let p = new OrbitParticle(
+      Math.floor(randomIntFromInterval(0, canvas.width)),
+      Math.floor(randomIntFromInterval(-canvas.height * 4, canvas.height * 4)),
+      randomIntFromInterval(8, 12),
+      centerParticle,
+      ctx
+    );
 
-      let color = (360 / canvas.width) * p.x;
-      p.color = `hsl(${color}, 80%, 50%)`;
-      particles.push(p);
-    }
-
-    // Sort particles by color, so we can avoid obsolete color changes when drawing later
-    particles.sort((a, b) => {
-      if (a.color < b.color) {
-        return -1;
-      }
-      if (a.color > b.color) {
-        return 1;
-      }
-      // a must be equal to b
-      return 0;
-    });
+    let color = (360 / canvas.width) * p.x;
+    p.color = `hsl(${color}, 80%, 50%)`;
+    particles.push(p);
   }
+
+  // Sort particles by color, so we can avoid obsolete color changes when drawing later
+  particles.sort((a, b) => {
+    if (a.color < b.color) {
+      return -1;
+    }
+    if (a.color > b.color) {
+      return 1;
+    }
+    // a must be equal to b
+    return 0;
+  });
 
   window.requestAnimationFrame(draw);
 }
@@ -121,9 +117,9 @@ export function draw(timer: DOMHighResTimeStamp): void {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
 
-  particles.forEach((p) => {
-    p.draw();
-  });
+  for (let particle of particles) {
+    particle.draw();
+  }
 
   centerParticle.draw();
 
