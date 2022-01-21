@@ -2,17 +2,17 @@ import { Particle } from "./Particle";
 import { OrbitParticle } from "./OrbitParticle";
 
 export class ParticleRenderer {
-  ctx: any;
   canvas: any;
+  ctx: any;
   lastDrawCall = 0;
   framerate = (1 / 60) * 1000;
 
   particles: OrbitParticle[] = [];
   centerParticle: Particle;
 
-  constructor(canvas, ctx) {
-    this.ctx = ctx;
+  constructor(canvas) {
     this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
   }
 
   setup() {
