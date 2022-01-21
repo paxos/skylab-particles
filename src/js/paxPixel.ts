@@ -47,6 +47,9 @@ export function setup() {
     const sy = window.scrollY;
 
     for (let particle of particles) {
+      if (particle.isOffScreen()) {
+        continue;
+      }
       // Source: https://stackoverflow.com/questions/3680429/click-through-div-to-underlying-elements
       mouse.x = event.pageX - bounds.left - sx;
       mouse.y = event.pageY - bounds.top - sy;
