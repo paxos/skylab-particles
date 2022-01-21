@@ -8,6 +8,8 @@ export class OrbitParticle extends Particle {
   centerParticle: Particle;
   ctx: any;
 
+  targetSize: number;
+
   constructor(
     x: number,
     y: number,
@@ -16,6 +18,7 @@ export class OrbitParticle extends Particle {
     ctx: HTMLCanvasElement
   ) {
     super(x, y, size, "blue");
+    this.targetSize = size;
     this.ctx = ctx;
 
     this.centerParticle = centerParticle;
@@ -29,6 +32,14 @@ export class OrbitParticle extends Particle {
 
   process() {
     this.rotation += 0.005;
+
+    if (this.targetSize != this.size) {
+      if (this.targetSize > this.size) {
+        this.size += 0.1;
+      } else {
+        this.size -= 0.1;
+      }
+    }
 
     [this.x, this.y] = this.rotate(
       this.centerParticle.x,

@@ -71,7 +71,8 @@ export function setup() {
         // particle.x += 1;
         // particle.y += 1;
         // particle.color = "red";
-        particle.color = "white";
+        // particle.color = "white";
+        particle.size = 4;
       }
     }
   };
