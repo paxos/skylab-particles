@@ -1,4 +1,6 @@
 import { Particle } from "./Particle";
+import * as PIXI from "pixi.js";
+import * as Color from "color";
 
 let lastDrawColor = "";
 
@@ -6,7 +8,8 @@ export class OrbitParticle extends Particle {
   rotation: number = 0;
   radius: number;
   centerParticle: Particle;
-  ctx: any;
+  app: PIXI.Application;
+  graphics: PIXI.Graphics;
 
   targetSize: number;
 
@@ -15,11 +18,13 @@ export class OrbitParticle extends Particle {
     y: number,
     size = 5,
     centerParticle: Particle,
-    ctx: HTMLCanvasElement
+    app: PIXI.Application,
+    graphics: PIXI.Graphics
   ) {
     super(x, y, size, "blue");
     this.targetSize = size;
-    this.ctx = ctx;
+    this.app = app;
+    this.graphics = graphics;
 
     this.centerParticle = centerParticle;
 
@@ -54,22 +59,30 @@ export class OrbitParticle extends Particle {
     return (
       this.x + this.size < 0 ||
       this.y + this.size < 0 ||
-      this.y + this.size > this.ctx.height ||
-      this.x + this.size > this.ctx.width
+      this.y + this.size > this.app.stage.height ||
+      this.x + this.size > this.app.stage.width
     );
   }
 
   draw() {
-    this.process();
+    //this.process();
 
     // ctx.globalAlpha = 0.7;
     // ctx.shadowBlur = 15;
-    // ctx.shadowColor = this.color;
+    // ctx.shadowColor = this.color;ed
 
     // Lets not draw if offscreen
-    if (this.isOffScreen()) {
-      return;
-    }
+    // if (this.isOffScreen()) {
+    //   return;
+    // }
+
+    // TODO: Cache color conversions
+    let color = Color.default(this.color);
+
+    this.graphics.lineStyle(0); // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+    this.graphics.beginFill(color.rgbNumber(), 1);
+    this.graphics.drawCircle(this.x, this.y, this.size);
+    this.graphics.endFill();
 
     // super.draw();
 
@@ -80,14 +93,14 @@ export class OrbitParticle extends Particle {
     if (lastDrawColor != this.color) {
       lastDrawColor = this.color;
 
-      this.ctx.fillStyle = this.color;
+      // this.ctx.fillStyle = this.color;
     }
 
     // ctx.fillRect(this.x, this.y, this.size, this.size);
 
-    this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    this.ctx.fill();
+    // this.ctx.beginPath();
+    // this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    // this.ctx.fill();
   }
 
   // from https://stackoverflow.com/questions/17410809/how-to-calculate-rotation-in-2d-in-javascript

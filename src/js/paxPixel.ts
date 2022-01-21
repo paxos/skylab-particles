@@ -1,30 +1,35 @@
 import { OrbitParticle } from "./OrbitParticle";
 import { Particle } from "./Particle";
-
-const canvas = document.getElementById("canvas") as any;
-const ctx = canvas.getContext("2d");
+import * as PIXI from "pixi.js";
 
 let particles: OrbitParticle[] = [];
 let centerParticle: Particle;
 
+const PARTICLE_COUNT = 50000;
+const MIN_PARTICLE_SIZE = 4;
+const MAX_PARTICLE_SIZE = 8;
+
+const app = new PIXI.Application({
+  width: document.documentElement.clientWidth,
+  height: 600,
+  // antialias: true,
+  // forceCanvas: true,
+});
+const graphics = new PIXI.Graphics(); // we render into this
+
 export function setup() {
-  // canvas.width = 1920;
-  // canvas.height = 1080;
+  const container = document.getElementById("canvas-container") as any;
+  container.appendChild(app.view);
 
-  window.onresize = () => {
-    canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
-  };
+  app.ticker.maxFPS = 60;
+  app.ticker.minFPS = 60;
+  app.ticker.add((delta) => {
+    draw(delta);
+  });
 
-  // canvas.width = 2000;
-  // canvas.height = 600;
+  app.stage.addChild(graphics);
 
-  canvas.style.width = "100%"; // Note you must post fix the unit type %,px,em
-  canvas.style.height = "400px";
-
-  canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
-
-  // canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
-  centerParticle = new Particle(canvas.width / 2, canvas.height / 2);
+  centerParticle = new Particle(app.view.width / 2, app.view.height / 2);
   centerParticle.color = "red";
   centerParticle.size = 50;
 
@@ -39,57 +44,60 @@ export function setup() {
     buttonNames: ["b1", "b2", "b3"], // named buttons
   };
 
-  canvas.onmousemove = (event: MouseEvent) => {
-    const minDistance = 50;
+  // canvas.onmousemove = (event: MouseEvent) => {
+  //   const minDistance = 50;
+  //
+  //   const bounds = canvas.getBoundingClientRect();
+  //   const sx = window.scrollX; // This saves a ton of performance
+  //   const sy = window.scrollY;
+  //
+  //   for (let particle of particles) {
+  //     if (particle.isOffScreen()) {
+  //       continue;
+  //     }
+  //     // Source: https://stackoverflow.com/questions/3680429/click-through-div-to-underlying-elements
+  //     mouse.x = event.pageX - bounds.left - sx;
+  //     mouse.y = event.pageY - bounds.top - sy;
+  //
+  //     // first normalize the mouse coordinates from 0 to 1 (0,0) top left
+  //     // off canvas and (1,1) bottom right by dividing by the bounds width and height
+  //     mouse.x /= bounds.width;
+  //     mouse.y /= bounds.height;
+  //
+  //     // then scale to canvas coordinates by multiplying the normalized coords with the canvas resolution
+  //
+  //     mouse.x *= canvas.width;
+  //     mouse.y *= canvas.height;
+  //
+  //     const yDistance = mouse.y - particle.y;
+  //     const xDistance = mouse.x - particle.x;
+  //     const distance = Math.sqrt(
+  //       Math.pow(Math.abs(xDistance), 2) + Math.pow(Math.abs(yDistance), 2)
+  //     );
+  //
+  //     if (distance <= minDistance) {
+  //       // particle.x += 1;
+  //       // particle.y += 1;
+  //       // particle.color = "red";
+  //       // particle.color = "white";
+  //       particle.size = 4;
+  //     }
+  //   }
+  // };
 
-    const bounds = canvas.getBoundingClientRect();
-    const sx = window.scrollX; // This saves a ton of performance
-    const sy = window.scrollY;
-
-    for (let particle of particles) {
-      if (particle.isOffScreen()) {
-        continue;
-      }
-      // Source: https://stackoverflow.com/questions/3680429/click-through-div-to-underlying-elements
-      mouse.x = event.pageX - bounds.left - sx;
-      mouse.y = event.pageY - bounds.top - sy;
-
-      // first normalize the mouse coordinates from 0 to 1 (0,0) top left
-      // off canvas and (1,1) bottom right by dividing by the bounds width and height
-      mouse.x /= bounds.width;
-      mouse.y /= bounds.height;
-
-      // then scale to canvas coordinates by multiplying the normalized coords with the canvas resolution
-
-      mouse.x *= canvas.width;
-      mouse.y *= canvas.height;
-
-      const yDistance = mouse.y - particle.y;
-      const xDistance = mouse.x - particle.x;
-      const distance = Math.sqrt(
-        Math.pow(Math.abs(xDistance), 2) + Math.pow(Math.abs(yDistance), 2)
-      );
-
-      if (distance <= minDistance) {
-        // particle.x += 1;
-        // particle.y += 1;
-        // particle.color = "red";
-        // particle.color = "white";
-        particle.size = 4;
-      }
-    }
-  };
-
-  for (let i = 0; i < 50000; i++) {
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
     let p = new OrbitParticle(
-      Math.floor(randomIntFromInterval(0, canvas.width)),
-      Math.floor(randomIntFromInterval(-canvas.height * 4, canvas.height * 4)),
-      randomIntFromInterval(8, 12),
+      Math.floor(randomIntFromInterval(0, app.view.width)),
+      Math.floor(
+        randomIntFromInterval(-app.view.height * 4, app.view.height * 4)
+      ),
+      randomIntFromInterval(MIN_PARTICLE_SIZE, MAX_PARTICLE_SIZE),
       centerParticle,
-      ctx
+      app,
+      graphics
     );
 
-    let color = (360 / canvas.width) * p.x;
+    let color = (360 / app.view.width) * p.x;
     p.color = `hsl(${color}, 80%, 50%)`;
     particles.push(p);
   }
@@ -106,28 +114,29 @@ export function setup() {
     return 0;
   });
 
-  window.requestAnimationFrame(draw);
+  // window.requestAnimationFrame(draw);
 }
 
 let lastDrawCall = 0;
 let framerate = (1 / 60) * 1000;
 
-export function draw(timer: DOMHighResTimeStamp): void {
-  if (timer - lastDrawCall <= framerate) {
-    window.requestAnimationFrame(draw);
-    return;
-  }
-  lastDrawCall = timer;
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
-
+export function draw(timer: number): void {
+  // if (timer - lastDrawCall <= framerate) {
+  //   window.requestAnimationFrame(draw);
+  //   return;
+  // }
+  // lastDrawCall = timer;
+  //
+  // ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
+  //
+  graphics.clear();
   for (let particle of particles) {
+    particle.process();
     particle.draw();
   }
-
-  centerParticle.draw();
-
-  window.requestAnimationFrame(draw);
+  //
+  // centerParticle.draw();
+  //
 }
 
 export function randomIntFromInterval(min, max) {

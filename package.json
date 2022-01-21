@@ -12,5 +12,11 @@
   "devDependencies": {
     "prettier": "^2.5.1",
     "snowpack": "^3.8.8"
+  },
+  "dependencies": {
+    "color": "^4.2.0",
+    "i": "^0.3.7",
+    "npm": "^8.3.2",
+    "pixi.js": "^6.2.1"
   }
 }
