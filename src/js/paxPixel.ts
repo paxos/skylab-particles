@@ -1,33 +1,33 @@
 import { OrbitParticle } from "./OrbitParticle";
 import { Particle } from "./Particle";
 import * as PIXI from "pixi.js";
+import * as Color from "color";
 
 let particles: OrbitParticle[] = [];
 let centerParticle: Particle;
 
-const PARTICLE_COUNT = 50000;
-const MIN_PARTICLE_SIZE = 4;
-const MAX_PARTICLE_SIZE = 8;
+const PARTICLE_COUNT = 60000;
+const MIN_PARTICLE_SIZE = 3;
+const MAX_PARTICLE_SIZE = 5;
 
 const app = new PIXI.Application({
   width: document.documentElement.clientWidth,
   height: 600,
-  // antialias: true,
+  antialias: true,
   // forceCanvas: true,
 });
-const graphics = new PIXI.Graphics(); // we render into this
+
+//const graphics = new PIXI.Graphics(); // we render into this
 
 export function setup() {
   const container = document.getElementById("canvas-container") as any;
   container.appendChild(app.view);
 
-  app.ticker.maxFPS = 60;
-  app.ticker.minFPS = 60;
+  // app.ticker.maxFPS = 60;
+  // app.ticker.minFPS = 60;
   app.ticker.add((delta) => {
     draw(delta);
   });
-
-  app.stage.addChild(graphics);
 
   centerParticle = new Particle(app.view.width / 2, app.view.height / 2);
   centerParticle.color = "red";
@@ -85,6 +85,8 @@ export function setup() {
   //   }
   // };
 
+  let pContainer = new PIXI.ParticleContainer(PARTICLE_COUNT);
+
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     let p = new OrbitParticle(
       Math.floor(randomIntFromInterval(0, app.view.width)),
@@ -93,14 +95,18 @@ export function setup() {
       ),
       randomIntFromInterval(MIN_PARTICLE_SIZE, MAX_PARTICLE_SIZE),
       centerParticle,
-      app,
-      graphics
+      app
     );
 
     let color = (360 / app.view.width) * p.x;
     p.color = `hsl(${color}, 80%, 50%)`;
+    p.prepareDraw();
+
+    pContainer.addChild(p.sprite);
     particles.push(p);
   }
+
+  app.stage.addChild(pContainer);
 
   // Sort particles by color, so we can avoid obsolete color changes when drawing later
   particles.sort((a, b) => {
@@ -129,10 +135,10 @@ export function draw(timer: number): void {
   //
   // ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
   //
-  graphics.clear();
+  // graphics.clear();
   for (let particle of particles) {
     particle.process();
-    particle.draw();
+    //particle.draw();
   }
   //
   // centerParticle.draw();

@@ -9,7 +9,8 @@ export class OrbitParticle extends Particle {
   radius: number;
   centerParticle: Particle;
   app: PIXI.Application;
-  graphics: PIXI.Graphics;
+  graphics = new PIXI.Graphics();
+  sprite: PIXI.Sprite;
 
   targetSize: number;
 
@@ -18,13 +19,12 @@ export class OrbitParticle extends Particle {
     y: number,
     size = 5,
     centerParticle: Particle,
-    app: PIXI.Application,
-    graphics: PIXI.Graphics
+    app: PIXI.Application
   ) {
     super(x, y, size, "blue");
     this.targetSize = size;
     this.app = app;
-    this.graphics = graphics;
+    //this.graphics = graphics;
 
     this.centerParticle = centerParticle;
 
@@ -53,6 +53,11 @@ export class OrbitParticle extends Particle {
       this.y,
       (0.1 + this.radius * 0.0002) * 0.2
     );
+
+    this.sprite.position.x = this.x;
+    this.sprite.position.y = this.y;
+
+    this.sprite.tint = Color.default(this.color).rgbNumber();
   }
 
   isOffScreen(): boolean {
@@ -64,43 +69,52 @@ export class OrbitParticle extends Particle {
     );
   }
 
+  prepareDraw() {
+    let color = Color.default("white");
+
+    this.graphics.lineStyle(0); // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+    this.graphics.beginFill(color.rgbNumber(), 1);
+    this.graphics.drawCircle(0, 0, this.size);
+    this.graphics.endFill();
+
+    const texture = this.app.renderer.generateTexture(this.graphics);
+    this.sprite = new PIXI.Sprite(texture);
+  }
+
   draw() {
     //this.process();
-
     // ctx.globalAlpha = 0.7;
     // ctx.shadowBlur = 15;
     // ctx.shadowColor = this.color;ed
-
     // Lets not draw if offscreen
     // if (this.isOffScreen()) {
     //   return;
     // }
-
-    // TODO: Cache color conversions
-    let color = Color.default(this.color);
-
-    this.graphics.lineStyle(0); // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
-    this.graphics.beginFill(color.rgbNumber(), 1);
-    this.graphics.drawCircle(this.x, this.y, this.size);
-    this.graphics.endFill();
-
-    // super.draw();
-
-    // ctx.save();
-
-    // setting ctx.fillStyle is slow, so only do it if needed
-    // (only works if Particles are sorted by color, which they are)
-    if (lastDrawColor != this.color) {
-      lastDrawColor = this.color;
-
-      // this.ctx.fillStyle = this.color;
-    }
-
-    // ctx.fillRect(this.x, this.y, this.size, this.size);
-
-    // this.ctx.beginPath();
-    // this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    // this.ctx.fill();
+    // // TODO: Cache color conversions
+    // let color = Color.default(this.color);
+    //
+    // this.graphics.lineStyle(0); // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+    // this.graphics.beginFill(color.rgbNumber(), 1);
+    // this.graphics.drawCircle(this.x, this.y, this.size);
+    // this.graphics.endFill();
+    //
+    // // super.draw();
+    //
+    // // ctx.save();
+    //
+    // // setting ctx.fillStyle is slow, so only do it if needed
+    // // (only works if Particles are sorted by color, which they are)
+    // if (lastDrawColor != this.color) {
+    //   lastDrawColor = this.color;
+    //
+    //   // this.ctx.fillStyle = this.color;
+    // }
+    //
+    // // ctx.fillRect(this.x, this.y, this.size, this.size);
+    //
+    // // this.ctx.beginPath();
+    // // this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    // // this.ctx.fill();
   }
 
   // from https://stackoverflow.com/questions/17410809/how-to-calculate-rotation-in-2d-in-javascript
