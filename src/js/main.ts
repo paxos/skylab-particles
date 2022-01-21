@@ -1,9 +1,5 @@
 import { ParticleRenderer } from "./ParticleRenderer";
 
-const myWorker = new Worker("js/worker.js");
-myWorker.postMessage([1, 2]);
-console.log("Message posted to worker");
-
 let canvas = document.getElementById("canvas") as any;
 
 window.onresize = () => {
@@ -14,9 +10,16 @@ canvas.style.width = "100%"; // Note you must post fix the unit type %,px,em
 canvas.style.height = "400px";
 canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
 
-let offsiteRendering = false;
+let offsiteRendering = true;
 if (offsiteRendering) {
-  // var offscreen = canvas.transferControlToOffscreen();
+  const offscreen = canvas.transferControlToOffscreen();
+  const myWorker = new Worker(new URL("./worker.js", import.meta.url), {
+    name: "my-worker",
+    type: "module",
+  });
+  // const myWorker = new Worker("js/worker.js");
+  myWorker.postMessage({ canvas: offscreen }, [offscreen]);
+  console.log("Message posted to worker");
 } else {
   new ParticleRenderer(canvas).setup();
 }

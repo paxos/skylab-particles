@@ -76,7 +76,7 @@ export class ParticleRenderer {
       }
     };
 
-    for (let i = 0; i < 50000; i++) {
+    for (let i = 0; i < 100000; i++) {
       let p = new OrbitParticle(
         Math.floor(randomIntFromInterval(0, this.canvas.width)),
         Math.floor(
@@ -104,12 +104,12 @@ export class ParticleRenderer {
       return 0;
     });
 
-    window.requestAnimationFrame((t) => this.draw(t));
+    requestAnimationFrame((t) => this.draw(t));
   }
 
   draw(timer: DOMHighResTimeStamp): void {
     if (timer - this.lastDrawCall <= this.framerate) {
-      window.requestAnimationFrame((t) => this.draw(t));
+      requestAnimationFrame((t) => this.draw(t));
       return;
     }
     this.lastDrawCall = timer;
@@ -122,7 +122,7 @@ export class ParticleRenderer {
 
     this.centerParticle.draw();
 
-    window.requestAnimationFrame((t) => this.draw(t));
+    requestAnimationFrame((t) => this.draw(t));
   }
 }
 
