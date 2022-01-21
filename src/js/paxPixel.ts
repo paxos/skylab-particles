@@ -9,12 +9,72 @@ export function setup() {
   // canvas.height = 1080;
 
   window.onresize = () => {
-    // canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
+    canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
   };
+
+  // canvas.width = 2000;
+  // canvas.height = 600;
+
+  canvas.style.width = "100%"; // Note you must post fix the unit type %,px,em
+  canvas.style.height = "400px";
+
   canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
+
+  // canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
   centerParticle = new Particle(canvas.width / 2, canvas.height / 2);
   centerParticle.color = "red";
   centerParticle.size = 50;
+
+  const mouse = {
+    x: 0,
+    y: 0, // coordinates
+    lastX: 0,
+    lastY: 0, // last frames mouse position
+    b1: false,
+    b2: false,
+    b3: false, // buttons
+    buttonNames: ["b1", "b2", "b3"], // named buttons
+  };
+
+  canvas.onmousemove = (event: MouseEvent) => {
+    const minDistance = 50;
+
+    const bounds = canvas.getBoundingClientRect();
+    const boundsLeft = bounds.left;
+    const boundsTop = bounds.top;
+    const eventPageX = event.pageX;
+    const eventPageY = event.pageY;
+    const sx = window.scrollX; // This saves a ton of performance
+    const sy = window.scrollY;
+    particles.forEach((particle) => {
+      // Source: https://stackoverflow.com/questions/3680429/click-through-div-to-underlying-elements
+      mouse.x = eventPageX - boundsLeft - sx;
+      mouse.y = eventPageY - boundsTop - sy;
+
+      // first normalize the mouse coordinates from 0 to 1 (0,0) top left
+      // off canvas and (1,1) bottom right by dividing by the bounds width and height
+      mouse.x /= bounds.width;
+      mouse.y /= bounds.height;
+
+      // then scale to canvas coordinates by multiplying the normalized coords with the canvas resolution
+
+      mouse.x *= canvas.width;
+      mouse.y *= canvas.height;
+
+      const yDistance = mouse.y - particle.y;
+      const xDistance = mouse.x - particle.x;
+      const distance = Math.sqrt(
+        Math.pow(Math.abs(xDistance), 2) + Math.pow(Math.abs(yDistance), 2)
+      );
+
+      if (distance <= minDistance) {
+        // particle.x += 1;
+        // particle.y += 1;
+        // particle.color = "red";
+        particle.color = "white";
+      }
+    });
+  };
 
   if (false) {
     particles.push(new OrbitParticle(300, 400, 5, "yellow"));
@@ -26,7 +86,7 @@ export function setup() {
         Math.floor(
           randomIntFromInterval(-canvas.height * 4, canvas.height * 4)
         ),
-        randomIntFromInterval(5, 15)
+        randomIntFromInterval(8, 12)
       );
 
       let color = (360 / canvas.width) * p.x;
@@ -107,6 +167,15 @@ class OrbitParticle extends Particle {
     );
   }
 
+  isOffScreen(): boolean {
+    return (
+      this.x + this.size < 0 ||
+      this.y + this.size < 0 ||
+      this.y + this.size > ctx.height ||
+      this.x + this.size > ctx.width
+    );
+  }
+
   draw() {
     this.process();
 
@@ -115,12 +184,7 @@ class OrbitParticle extends Particle {
     // ctx.shadowColor = this.color;
 
     // Lets not draw if offscreen
-    if (
-      this.x + this.size < 0 ||
-      this.y + this.size < 0 ||
-      this.y + this.size > ctx.height ||
-      this.x + this.size > ctx.width
-    ) {
+    if (this.isOffScreen()) {
       return;
     }
 
