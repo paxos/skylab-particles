@@ -40,16 +40,12 @@ export function setup() {
     const minDistance = 50;
 
     const bounds = canvas.getBoundingClientRect();
-    const boundsLeft = bounds.left;
-    const boundsTop = bounds.top;
-    const eventPageX = event.pageX;
-    const eventPageY = event.pageY;
     const sx = window.scrollX; // This saves a ton of performance
     const sy = window.scrollY;
     particles.forEach((particle) => {
       // Source: https://stackoverflow.com/questions/3680429/click-through-div-to-underlying-elements
-      mouse.x = eventPageX - boundsLeft - sx;
-      mouse.y = eventPageY - boundsTop - sy;
+      mouse.x = event.pageX - bounds.left - sx;
+      mouse.y = event.pageY - bounds.top - sy;
 
       // first normalize the mouse coordinates from 0 to 1 (0,0) top left
       // off canvas and (1,1) bottom right by dividing by the bounds width and height
@@ -93,6 +89,18 @@ export function setup() {
       p.color = `hsl(${color}, 80%, 50%)`;
       particles.push(p);
     }
+
+    // Sort particles by color, so we can avoid obsolete color changes when drawing later
+    particles.sort((a, b) => {
+      if (a.color < b.color) {
+        return -1;
+      }
+      if (a.color > b.color) {
+        return 1;
+      }
+      // a must be equal to b
+      return 0;
+    });
   }
 
   window.requestAnimationFrame(draw);
@@ -111,7 +119,6 @@ export function draw(timer: DOMHighResTimeStamp): void {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
 
   particles.forEach((p) => {
-    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
     p.draw();
   });
 
@@ -140,6 +147,8 @@ class Particle {
 
   draw() {}
 }
+
+let lastDrawColor = "";
 
 class OrbitParticle extends Particle {
   rotation: number = 0;
@@ -192,7 +201,13 @@ class OrbitParticle extends Particle {
 
     // ctx.save();
 
-    ctx.fillStyle = this.color;
+    // setting ctx.fillStyle is slow, so only do it if needed
+    // (only works if Particles are sorted by color, which they are)
+    if (lastDrawColor != this.color) {
+      lastDrawColor = this.color;
+
+      ctx.fillStyle = this.color;
+    }
 
     // ctx.fillRect(this.x, this.y, this.size, this.size);
 
