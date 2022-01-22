@@ -54,8 +54,8 @@ export class OrbitParticle extends Particle {
     return (
       this.x + this.size < 0 ||
       this.y + this.size < 0 ||
-      this.y + this.size > this.ctx.height ||
-      this.x + this.size > this.ctx.width
+      this.y - this.size > this.ctx.canvas.height ||
+      this.x + this.size > this.ctx.canvas.width
     );
   }
 
