@@ -1,6 +1,8 @@
 import { Particle } from "./Particle";
 import { OrbitParticle } from "./OrbitParticle";
 
+const NUMBER_OF_PARTICLES = 50000;
+
 export class ParticleRenderer {
   canvas: any;
   ctx: any;
@@ -76,7 +78,7 @@ export class ParticleRenderer {
       }
     };
 
-    for (let i = 0; i < 100000; i++) {
+    for (let i = 0; i < NUMBER_OF_PARTICLES; i++) {
       let p = new OrbitParticle(
         Math.floor(randomIntFromInterval(0, this.canvas.width)),
         Math.floor(
