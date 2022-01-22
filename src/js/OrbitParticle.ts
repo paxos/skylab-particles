@@ -35,7 +35,7 @@ export class OrbitParticle extends Particle {
     lala = lala * 1;
 
     // this.size = 1 * this.easeInCubic(lala);
-    this.targetSize = size * (lala * 3); // for invert, divide
+    this.targetSize = size * (lala * 2.5); // for invert, divide
   }
 
   process() {
@@ -111,5 +111,9 @@ export class OrbitParticle extends Particle {
 
   easeInCubic(x: number): number {
     return x * x * x;
+  }
+
+  easeOutSine(x: number): number {
+    return Math.sin((x * Math.PI) / 2);
   }
 }
