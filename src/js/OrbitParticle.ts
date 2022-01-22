@@ -35,7 +35,7 @@ export class OrbitParticle extends Particle {
     lala = lala * 1;
 
     // this.size = 1 * this.easeInCubic(lala);
-    this.targetSize = size * (lala * 2.5); // for invert, divide
+    this.targetSize = size * (lala * 0.7); // for invert, divide
   }
 
   process() {

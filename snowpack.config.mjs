@@ -1,4 +1,7 @@
 export default {
+  plugins: [
+    '@snowpack/plugin-sass',
+  ],
   root: "src",
   buildOptions: {
     out: "build",

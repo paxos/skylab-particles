@@ -78,7 +78,7 @@ export class ParticleRenderer {
       let p = new OrbitParticle(
         Math.floor(randomIntFromInterval(0, this.canvas.width)),
         Math.floor(
-          randomIntFromInterval(-this.canvas.height * 3, this.canvas.height * 3)
+          randomIntFromInterval(-this.canvas.height * 4, this.canvas.height * 4)
         ),
         randomIntFromInterval(8, 12),
         this.centerParticle,
