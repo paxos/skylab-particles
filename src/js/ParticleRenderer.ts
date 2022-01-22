@@ -69,10 +69,6 @@ export class ParticleRenderer {
         );
 
         if (distance <= minDistance) {
-          // particle.x += 1;
-          // particle.y += 1;
-          // particle.color = "red";
-          // particle.color = "white";
           particle.size = 4;
         }
       }
@@ -130,7 +126,6 @@ export class ParticleRenderer {
     document.getElementById(
       "debug"
     ).innerText = `${drawn} drawn, ${notDrawn} skipped`;
-    // console.log(`${drawn} drawn, ${notDrawn} skipped`);
 
     this.centerParticle.draw();
 

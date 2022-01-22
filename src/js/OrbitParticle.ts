@@ -68,18 +68,10 @@ export class OrbitParticle extends Particle {
   }
 
   draw(): boolean {
-    // ctx.globalAlpha = 0.7;
-    // ctx.shadowBlur = 15;
-    // ctx.shadowColor = this.color;
-
     // Lets not draw if offscreen
     if (this.isOffScreen()) {
       return false;
     }
-
-    // super.draw();
-
-    // ctx.save();
 
     // setting ctx.fillStyle is slow, so only do it if needed
     // (only works if Particles are sorted by color, which they are)
@@ -88,8 +80,6 @@ export class OrbitParticle extends Particle {
 
       this.ctx.fillStyle = this.color;
     }
-
-    // ctx.fillRect(this.x, this.y, this.size, this.size);
 
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
