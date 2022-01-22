@@ -30,10 +30,12 @@ export class OrbitParticle extends Particle {
     );
 
     let lala = this.radius / this.ctx.canvas.width;
-
     this.size = 1; // gets animated up
+
+    lala = lala * 1;
+
     // this.size = 1 * this.easeInCubic(lala);
-    this.targetSize = size * (lala * 3);
+    this.targetSize = size * (lala * 3); // for invert, divide
   }
 
   process() {
