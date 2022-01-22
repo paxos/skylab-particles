@@ -28,6 +28,9 @@ export class OrbitParticle extends Particle {
     this.radius = Math.sqrt(
       Math.pow(Math.abs(xDistance), 2) + Math.pow(Math.abs(yDistance), 2)
     );
+
+    let lala = this.radius / this.ctx.canvas.width;
+    console.log(lala);
   }
 
   process() {
@@ -55,20 +58,18 @@ export class OrbitParticle extends Particle {
       this.x + this.size < 0 ||
       this.y + this.size < 0 ||
       this.y - this.size > this.ctx.canvas.height ||
-      this.x + this.size > this.ctx.canvas.width
+      this.x - this.size > this.ctx.canvas.width
     );
   }
 
-  draw() {
-    this.process();
-
+  draw(): boolean {
     // ctx.globalAlpha = 0.7;
     // ctx.shadowBlur = 15;
     // ctx.shadowColor = this.color;
 
     // Lets not draw if offscreen
     if (this.isOffScreen()) {
-      return;
+      return false;
     }
 
     // super.draw();
@@ -88,6 +89,8 @@ export class OrbitParticle extends Particle {
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     this.ctx.fill();
+
+    return true;
   }
 
   // from https://stackoverflow.com/questions/17410809/how-to-calculate-rotation-in-2d-in-javascript
@@ -99,5 +102,9 @@ export class OrbitParticle extends Particle {
       nx = cos * (x - cx) + sin * (y - cy) + cx,
       ny = cos * (y - cy) - sin * (x - cx) + cy;
     return [nx, ny];
+  }
+
+  easeInCubic(x: number): number {
+    return x * x * x;
   }
 }

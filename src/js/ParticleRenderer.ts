@@ -1,13 +1,14 @@
 import { Particle } from "./Particle";
 import { OrbitParticle } from "./OrbitParticle";
 
-const NUMBER_OF_PARTICLES = 50000;
+const NUMBER_OF_PARTICLES = 40000;
+const FPS = 60;
 
 export class ParticleRenderer {
   canvas: any;
   ctx: any;
   lastDrawCall = 0;
-  framerate = (1 / 60) * 1000;
+  framerate = (1 / FPS) * 1000;
 
   particles: OrbitParticle[] = [];
   centerParticle: Particle;
@@ -18,7 +19,6 @@ export class ParticleRenderer {
   }
 
   setup() {
-    // this.canvas.width = this.canvas.height * (canvas.clientWidth / this.canvas.clientHeight);
     this.centerParticle = new Particle(
       this.canvas.width / 2,
       this.canvas.height / 2
@@ -112,15 +112,25 @@ export class ParticleRenderer {
   draw(timer: DOMHighResTimeStamp): void {
     if (timer - this.lastDrawCall <= this.framerate) {
       requestAnimationFrame((t) => this.draw(t));
+      // console.log("skip");
       return;
     }
     this.lastDrawCall = timer;
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear this.canvas
 
+    let drawn = 0,
+      notDrawn = 0;
+
     for (let particle of this.particles) {
-      particle.draw();
+      particle.process();
+      particle.draw() ? ++drawn : ++notDrawn;
     }
+
+    document.getElementById(
+      "debug"
+    ).innerText = `${drawn} drawn, ${notDrawn} skipped`;
+    // console.log(`${drawn} drawn, ${notDrawn} skipped`);
 
     this.centerParticle.draw();
 
