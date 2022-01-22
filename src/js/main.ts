@@ -10,7 +10,7 @@ canvas.style.width = "100%"; // Note you must post fix the unit type %,px,em
 canvas.style.height = "400px";
 canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
 
-let offsiteRendering = true;
+let offsiteRendering = false;
 if (offsiteRendering) {
   const offscreen = canvas.transferControlToOffscreen();
   const myWorker = new Worker(new URL("./worker.js", import.meta.url), {
