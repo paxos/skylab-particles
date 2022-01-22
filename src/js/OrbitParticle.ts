@@ -18,7 +18,7 @@ export class OrbitParticle extends Particle {
     ctx: HTMLCanvasElement
   ) {
     super(x, y, size, "blue");
-    this.targetSize = size;
+
     this.ctx = ctx;
 
     this.centerParticle = centerParticle;
@@ -30,7 +30,10 @@ export class OrbitParticle extends Particle {
     );
 
     let lala = this.radius / this.ctx.canvas.width;
-    console.log(lala);
+
+    this.size = 1; // gets animated up
+    // this.size = 1 * this.easeInCubic(lala);
+    this.targetSize = size * (lala * 3);
   }
 
   process() {
