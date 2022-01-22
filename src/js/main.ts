@@ -8,6 +8,9 @@ window.onresize = () => {
 
 // canvas.style.width = "100%"; // Note you must post fix the unit type %,px,em
 // canvas.style.height = "400px";
-canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
+// canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight);
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 new ParticleRenderer(canvas).setup();
