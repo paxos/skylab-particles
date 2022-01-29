@@ -32,10 +32,13 @@ export class OrbitParticle extends Particle {
     let lala = this.radius / this.ctx.canvas.width;
     this.size = 1; // gets animated up
 
-    lala = lala * 1;
+    lala = lala * 1.5;
 
     // this.size = 1 * this.easeInCubic(lala);
-    this.targetSize = size * (lala * 0.7); // for invert, divide
+
+    let CENTER_FACTOR = 0.7; // how much is centered vs outer
+
+    this.targetSize = size * (lala * CENTER_FACTOR); // for invert, divide
   }
 
   process() {
@@ -54,7 +57,7 @@ export class OrbitParticle extends Particle {
       this.centerParticle.y,
       this.x,
       this.y,
-      (0.1 + this.radius * 0.0002) * 0.2
+      (0.2 + this.radius * 0.0004) * 0.2
     );
   }
 
@@ -81,9 +84,11 @@ export class OrbitParticle extends Particle {
       this.ctx.fillStyle = this.color;
     }
 
-    this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    this.ctx.fill();
+    if (this.size > 0) {
+      this.ctx.beginPath();
+      this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+      this.ctx.fill();
+    }
 
     return true;
   }

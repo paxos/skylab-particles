@@ -1,7 +1,6 @@
 import { Particle } from "./Particle";
 import { OrbitParticle } from "./OrbitParticle";
 
-const NUMBER_OF_PARTICLES = 40000;
 const FPS = 60;
 
 export class ParticleRenderer {
@@ -12,6 +11,7 @@ export class ParticleRenderer {
 
   particles: OrbitParticle[] = [];
   centerParticle: Particle;
+  numberOfParticles = 50000; // default
 
   constructor(canvas) {
     this.canvas = canvas;
@@ -25,6 +25,9 @@ export class ParticleRenderer {
     );
     this.centerParticle.color = "red";
     this.centerParticle.size = 50;
+
+    this.numberOfParticles = 50000;
+    console.log("Decided for number of particles: " + this.numberOfParticles);
 
     const mouse = {
       x: 0,
@@ -74,11 +77,20 @@ export class ParticleRenderer {
       }
     };
 
-    for (let i = 0; i < NUMBER_OF_PARTICLES; i++) {
+    for (let i = 0; i < this.numberOfParticles; i++) {
+      let OVERSCALE_FACTOR = 1.0;
       let p = new OrbitParticle(
-        Math.floor(randomIntFromInterval(0, this.canvas.width)),
         Math.floor(
-          randomIntFromInterval(-this.canvas.height * 4, this.canvas.height * 4)
+          randomIntFromInterval(
+            -this.canvas.width * OVERSCALE_FACTOR,
+            this.canvas.width * OVERSCALE_FACTOR
+          )
+        ),
+        Math.floor(
+          randomIntFromInterval(
+            -this.canvas.height * OVERSCALE_FACTOR,
+            this.canvas.height * OVERSCALE_FACTOR
+          )
         ),
         randomIntFromInterval(8, 12),
         this.centerParticle,
