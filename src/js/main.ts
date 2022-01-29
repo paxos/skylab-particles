@@ -12,7 +12,7 @@ let canvas = document.getElementById("canvas") as any;
 
 let maxSize = Math.max(window.innerWidth, window.innerHeight) * 1;
 
-canvas.width = maxSize;
-canvas.height = maxSize;
+canvas.width = 800;
+canvas.height = 600;
 
 new ParticleRenderer(canvas).setup();

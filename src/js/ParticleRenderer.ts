@@ -78,7 +78,7 @@ export class ParticleRenderer {
     };
 
     for (let i = 0; i < this.numberOfParticles; i++) {
-      let OVERSCALE_FACTOR = 1.0;
+      let OVERSCALE_FACTOR = 1.5;
       let p = new OrbitParticle(
         Math.floor(
           randomIntFromInterval(
