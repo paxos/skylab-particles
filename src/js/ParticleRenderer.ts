@@ -135,9 +135,10 @@ export class ParticleRenderer {
       particle.draw() ? ++drawn : ++notDrawn;
     }
 
-    document.getElementById(
-      "debug"
-    ).innerText = `${drawn} drawn, ${notDrawn} skipped`;
+    let debug = document.getElementById("debug");
+    if (!debug.hidden) {
+      debug.innerText = `${drawn} drawn, ${notDrawn} skipped`;
+    }
 
     this.centerParticle.draw();
 
