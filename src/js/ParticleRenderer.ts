@@ -41,7 +41,9 @@ export class ParticleRenderer {
     };
 
     this.canvas.onmousemove = (event: MouseEvent) => {
-      const minDistance = 50;
+      const MIN_DISTANCE = 50;
+      const MAX_HOVER_SIZE = 4;
+      const SIZE_BUMP_TO_LEAVE_BEHIND = 2;
 
       const bounds = this.canvas.getBoundingClientRect();
       const sx = window.scrollX; // This saves a ton of performance
@@ -71,8 +73,11 @@ export class ParticleRenderer {
           Math.pow(Math.abs(xDistance), 2) + Math.pow(Math.abs(yDistance), 2)
         );
 
-        if (distance <= minDistance) {
-          particle.size = 4;
+        if (distance <= MIN_DISTANCE) {
+          let relativeSizeBump =
+            ((MIN_DISTANCE - distance) / MIN_DISTANCE) * MAX_HOVER_SIZE;
+          particle.size =
+            particle.targetSize + relativeSizeBump + SIZE_BUMP_TO_LEAVE_BEHIND;
         }
       }
     };
