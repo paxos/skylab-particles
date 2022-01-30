@@ -73,10 +73,6 @@ body, a {
   color: white;
 }
 
-a {
-  pointer-events: auto;
-}
-
 #content {
   text-align: center;
 }
@@ -90,7 +86,21 @@ h5 {
   margin-top: 0;
 }
 
-#footer a {
-  margin: 6px;
+#footer {
+  margin-top:60px;
 }
 
+#footer a {
+  //text-decoration: none;
+  pointer-events: all;
+  margin: 6px;
+  transition-property: opacity;
+  transition-duration: 0.1s;
+  transition-timing-function: ease-in;
+  -webkit-transform: rotate(-90deg);
+}
+
+#footer a:hover {
+  //text-decoration: underline;
+  opacity: .7;
+}
