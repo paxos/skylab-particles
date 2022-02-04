@@ -3,6 +3,9 @@ import { OrbitParticle } from "./OrbitParticle";
 
 const FPS = 60;
 
+const MIN_PARTICLE_SIZE = 10;
+const MAX_PARTICLE_SIZE = 14;
+
 export class ParticleRenderer {
   canvas: any;
   ctx: any;
@@ -97,7 +100,7 @@ export class ParticleRenderer {
             this.canvas.height * OVERSCALE_FACTOR
           )
         ),
-        randomIntFromInterval(8, 12),
+        randomIntFromInterval(MIN_PARTICLE_SIZE, MAX_PARTICLE_SIZE),
         this.centerParticle,
         this.ctx
       );
