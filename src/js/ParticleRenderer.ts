@@ -3,8 +3,8 @@ import { OrbitParticle } from "./OrbitParticle";
 
 const FPS = 60;
 
-const MIN_PARTICLE_SIZE = 10;
-const MAX_PARTICLE_SIZE = 14;
+const MIN_PARTICLE_SIZE = 12;
+const MAX_PARTICLE_SIZE = 16;
 
 export class ParticleRenderer {
   canvas: any;

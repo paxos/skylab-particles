@@ -31,11 +31,11 @@ export class OrbitParticle extends Particle {
 
     this.size = 1; // gets animated up
 
-    let lala = (this.radius / this.ctx.canvas.width) * 1.0;
+    let lala = (this.radius / this.ctx.canvas.width) * 1;
 
     // this.size = 1 * this.easeInCubic(lala);
 
-    let CENTER_FACTOR = 0.5; // how much is center rot vs outer
+    let CENTER_FACTOR = 0.4; // how much is center rot vs outer
 
     this.targetSize = size * (lala * CENTER_FACTOR); // for invert, divide
   }
@@ -56,7 +56,7 @@ export class OrbitParticle extends Particle {
       this.centerParticle.y,
       this.x,
       this.y,
-      (0.2 + this.radius * 0.0009) * 0.2
+      (0.2 + this.radius * 0.0015) * 0.2
     );
   }
 
