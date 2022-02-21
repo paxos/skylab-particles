@@ -56,7 +56,7 @@ export class OrbitParticle extends Particle {
       this.centerParticle.y,
       this.x,
       this.y,
-      (0.2 + this.radius * 0.0015) * 0.2
+      (0.2 + this.radius * 0.0015) * 0.1
     );
   }
 
